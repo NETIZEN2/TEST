@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "geo_facts.schema.json",
+  "title": "GeoFacts",
+  "type": "object",
+  "properties": {
+    "coordinates": {
+      "type": "array",
+      "items": {"type": "number"},
+      "description": "Latitude and longitude pairs"
+    },
+    "ais": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "AIS or ADS-B identifiers"
+    },
+    "addresses": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Associated addresses"
+    },
+    "permits": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Permit or zoning references"
+    }
+  },
+  "additionalProperties": false,
+  "default": {}
+}

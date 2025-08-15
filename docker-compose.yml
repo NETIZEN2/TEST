@@ -1,0 +1,18 @@
+version: '3.9'
+services:
+  api:
+    build: ./services/api
+    ports:
+      - "8000:8000"
+    environment:
+      - ADVANCED_FACTS=false
+  fetcher:
+    build: ./services/fetcher
+  workers:
+    build: ./services/workers
+    depends_on:
+      - fetcher
+  web:
+    build: ./web/app
+    ports:
+      - "3000:3000"

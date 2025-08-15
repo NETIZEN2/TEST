@@ -1,0 +1,5 @@
+apiVersion: v2
+name: osint-pro
+version: 0.1.0
+description: Helm chart for osint-pro
+appVersion: "0.1.0"

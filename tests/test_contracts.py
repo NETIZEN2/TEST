@@ -20,6 +20,7 @@ def test_json_schemas_load():
 
 
 def test_openapi_spec_load():
+    with open("services/api/openapi.json") as f:
     with open("services/api/openapi.yaml") as f:
         spec = json.load(f)
     assert spec["openapi"].startswith("3"), "openapi version"

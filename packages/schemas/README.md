@@ -1,6 +1,6 @@
 # Schemas Package
 
-JSON Schemas for shared contracts.
+JSON Schemas for shared contracts and TypeBox adapters.
 
 - `doc.schema.json`
 - `signal.schema.json`

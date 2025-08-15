@@ -40,6 +40,12 @@ class Connector(ABC):
             return docs
         except Exception as exc:  # never raise
             status = getattr(exc, "code", 0)
+        try:
+            async with self._semaphore:
+                return await self._search(
+                    query, type=type, context=context, limit=limit, timeout_ms=timeout_ms
+                )
+        except Exception as exc:  # never raise
             logger.error(
                 "connector_error", extra={"connector": self.source, "error": str(exc)}
             )

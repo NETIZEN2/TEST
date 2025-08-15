@@ -8,4 +8,7 @@ export default function Home() {
       <Link href="/search" className="text-blue-700 underline">Start searching</Link>
     </main>
   );
+
+export default function Home() {
+  return <div>OSINT Pro</div>;
 }

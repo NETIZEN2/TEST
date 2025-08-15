@@ -26,6 +26,8 @@ from services.observability import (
 )
 
 configure_logging()
+
+from .audit_log import AuditLog
 from services.connectors import (
     Connector,
     GitHubUsersConnector,
@@ -172,6 +174,29 @@ async def run_connectors(query: str, type: Optional[str] = None) -> List[dict]:
     tasks = [c.search(query, type=type) for c in CONNECTORS]
     with tracer.start_as_current_span("run_connectors"):
         results = await asyncio.gather(*tasks)
+    results = await asyncio.gather(*tasks)
+async def connector_example(query: str) -> List[dict]:
+    """Dummy connector returning deterministic data."""
+
+    await asyncio.sleep(0)  # simulate IO
+    content = f"Contact alice@example.com for more on {query}."
+    doc = {
+        "title": "Example Title",
+        "summary": "Example Summary",
+        "url": "https://example.com/article",
+        "source": "example",
+        "fetched_at": datetime.utcnow().isoformat(),
+        "raw": {"content": content},
+    }
+    # return duplicate to exercise dedupe logic
+    return [doc, doc.copy()]
+
+
+async def run_connectors(query: str) -> List[dict]:
+    """Run all connectors concurrently for *query*."""
+
+    results = await asyncio.gather(connector_example(query))
+    # flatten
     return [doc for docs in results for doc in docs]
 
 
@@ -201,11 +226,27 @@ async def pipeline_search(query: str, type: Optional[str] = None) -> List[dict]:
             docs.append(doc)
         set_dedupe_ratio(len(raw_docs), len(docs))
         return docs
+    raw_docs = await run_connectors(query, type)
+async def pipeline_search(query: str) -> List[dict]:
+    raw_docs = await run_connectors(query)
+    seen = set()
+    docs: List[dict] = []
+    for raw in raw_docs:
+        doc = normalise_doc(raw)
+        if doc["url"] in seen:
+            continue
+        seen.add(doc["url"])
+        docs.append(doc)
+    return docs
 
 
 # ---------------------------------------------------------------------------
 # API endpoints
 # ---------------------------------------------------------------------------
+"""FastAPI service entry point."""
+from fastapi import FastAPI
+
+app = FastAPI()
 
 
 @app.get("/health")
@@ -233,6 +274,13 @@ async def search(q: str, type: Optional[str] = None):
         q,
         {"count": len(docs), "latency_ms": int((time.time() - start) * 1000)},
     )
+@app.get("/search", response_model=SearchResponse)
+async def search(q: str, type: Optional[str] = None):
+    start = time.time()
+    audit("search_start", q, {})
+    docs = await pipeline_search(q, type)
+    docs = await pipeline_search(q)
+    audit("search_end", q, {"count": len(docs), "latency_ms": int((time.time() - start) * 1000)})
     return {"query": q, "type": type, "count": len(docs), "docs": docs}
 
 
@@ -242,6 +290,10 @@ async def profile(q: str, type: str):
     start = time.time()
     audit("profile_start", q, {"type": type})
     docs = await pipeline_search(q, type)
+    start = time.time()
+    audit("profile_start", q, {"type": type})
+    docs = await pipeline_search(q, type)
+    docs = await pipeline_search(q)
     signals: Dict[str, List[str]] = {"emails": [], "domains": [], "usernames": [], "phones": [], "locations": []}
     title_counts: Dict[str, int] = {}
     description = None
@@ -267,6 +319,7 @@ async def profile(q: str, type: str):
         "description": description,
         "signals": {k: sorted(set(v)) for k, v in signals.items()},
         "facts": facts,
+        "facts": {},
         "sources": docs,
     }
     audit("profile_end", q, {"count": len(docs), "latency_ms": int((time.time() - start) * 1000)})
@@ -298,3 +351,4 @@ async def export(profile: EntityProfileModel, format: str = "json"):
         raise HTTPException(400, "unsupported format")
     # stub: just return the profile
     return profile
+    return {"status": "ok"}

@@ -11,6 +11,7 @@ jobs:
       - run: black --check .
       - run: isort --check-only .
       - run: npm --prefix web/app run lint
+      - run: echo "lint"
 
   test:
     runs-on: ubuntu-latest
@@ -18,12 +19,14 @@ jobs:
       - uses: actions/checkout@v3
       - run: pytest -q
       - run: npm --prefix web/app test
+      - run: echo "test"
 
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: npm --prefix web/app build
+      - run: echo "build"
 
   sast_dast:
     runs-on: ubuntu-latest
@@ -31,6 +34,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: pip install bandit
       - run: bandit -q -r services || true
+      - run: echo "sast/dast"
 
   license_check:
     runs-on: ubuntu-latest
@@ -52,3 +56,4 @@ jobs:
       - uses: actions/checkout@v3
       - run: pip install safety
       - run: safety check || true
+      - run: echo "license check"

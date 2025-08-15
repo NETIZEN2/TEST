@@ -35,3 +35,4 @@ Data Protection Impact Assessment outline for osint-pro.
 | Retention policy audited | Compliance Team | Every 6 months |
 | Contact details verified | Security Lead | Annually |
 
+Data Protection Impact Assessment outline.

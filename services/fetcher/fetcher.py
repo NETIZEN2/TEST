@@ -80,3 +80,10 @@ def fetch(url: str, *, allowed_hosts: Optional[Iterable[str]] = None) -> FetchRe
 
     return FetchResult(url=url, content=content, content_type=ctype)
 
+"""Sandboxed HTTP fetcher stub."""
+from typing import Any
+
+
+def fetch(url: str) -> Any:
+    """Fetch content from URL (stub)."""
+    return {"url": url, "content": ""}

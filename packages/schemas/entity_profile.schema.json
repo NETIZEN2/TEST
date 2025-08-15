@@ -29,6 +29,7 @@
       "default": {},
       "additionalProperties": false
     },
+    "facts": {"type": "object"},
     "sources": {
       "type": "array",
       "items": {"$ref": "doc.schema.json"}

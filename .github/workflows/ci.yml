@@ -1,0 +1,54 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install black isort
+      - run: black --check .
+      - run: isort --check-only .
+      - run: npm --prefix web/app run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pytest -q
+      - run: npm --prefix web/app test
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm --prefix web/app build
+
+  sast_dast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install bandit
+      - run: bandit -q -r services || true
+
+  license_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install pip-licenses
+      - run: pip-licenses
+
+  openapi_validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install openapi-spec-validator
+      - run: python -m openapi_spec_validator services/api/openapi.json
+
+  dependency_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install safety
+      - run: safety check || true

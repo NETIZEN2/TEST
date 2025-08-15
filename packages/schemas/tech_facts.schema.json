@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tech_facts.schema.json",
+  "title": "TechFacts",
+  "type": "object",
+  "properties": {
+    "dns": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Resolved DNS records"
+    },
+    "asn": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Associated ASNs"
+    },
+    "certificates": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Certificate fingerprints"
+    },
+    "tech_stack": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Observed technology hints"
+    }
+  },
+  "additionalProperties": false,
+  "default": {}
+}

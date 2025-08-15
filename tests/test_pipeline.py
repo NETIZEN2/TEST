@@ -59,6 +59,15 @@ def test_search_deduplicates_and_hashes():
 
 def test_profile_extracts_signals():
     result = asyncio.run(api.profile(q="alice", type="person"))
+    assert "alice@example.com" in result["signals"]["emails"]
+    assert result["confidence"] <= 1
+    assert result["query"] == "alice"
+
+
+def test_profile_includes_advanced_facts(monkeypatch):
+    monkeypatch.setenv("ADVANCED_FACTS", "true")
+    result = asyncio.run(api.profile(q="alice", type="person"))
+    assert set(result["facts"].keys()) == {"tech", "geo", "legal", "media"}
     result = asyncio.run(profile(q="alice", type="person"))
     assert "alice@example.com" in result["signals"]["emails"]
     assert result["confidence"] <= 1

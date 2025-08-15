@@ -18,6 +18,17 @@
     "confidence": {"type": "number", "minimum": 0, "maximum": 1},
     "description": {"type": "string"},
     "signals": {"$ref": "signal.schema.json"},
+    "facts": {
+      "type": "object",
+      "properties": {
+        "tech": {"$ref": "tech_facts.schema.json"},
+        "geo": {"$ref": "geo_facts.schema.json"},
+        "legal": {"$ref": "legal_facts.schema.json"},
+        "media": {"$ref": "media_facts.schema.json"}
+      },
+      "default": {},
+      "additionalProperties": false
+    },
     "facts": {"type": "object"},
     "sources": {
       "type": "array",

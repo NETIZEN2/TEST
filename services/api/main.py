@@ -31,6 +31,7 @@ from services.connectors import (
     WaybackConnector,
     WikidataConnector,
 )
+from services.facts import extract_facts
 
 app = FastAPI()
 audit_log = AuditLog()
@@ -250,6 +251,8 @@ async def profile(q: str, type: str):
     canonical_name = max(title_counts, key=title_counts.get) if title_counts else q
     aliases = [t for t in title_counts if t != canonical_name]
     confidence = min(1.0, len(docs) / 5)
+    text_blob = " ".join(d["summary"] for d in docs)
+    facts = extract_facts(text_blob) if os.getenv("ADVANCED_FACTS") == "true" else {}
     profile = {
         "query": q,
         "type": type,
@@ -258,6 +261,7 @@ async def profile(q: str, type: str):
         "confidence": confidence,
         "description": description,
         "signals": {k: sorted(set(v)) for k, v in signals.items()},
+        "facts": facts,
         "facts": {},
         "sources": docs,
     }

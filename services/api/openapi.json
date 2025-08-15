@@ -1,0 +1,147 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "osint-pro API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {"description": "OK"}
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Metrics",
+        "responses": {
+          "200": {"description": "Current metrics"}
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "summary": "Search documents",
+        "parameters": [
+          {"name": "q", "in": "query", "required": true, "schema": {"type": "string"}},
+          {"name": "type", "in": "query", "required": false, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "query": {"type": "string"},
+                    "type": {"type": "string"},
+                    "count": {"type": "integer"},
+                    "docs": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Doc"}
+                    }
+                  },
+                  "required": ["query", "type", "count", "docs"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "summary": "Get entity profile",
+        "parameters": [
+          {"name": "q", "in": "query", "required": true, "schema": {"type": "string"}},
+          {"name": "type", "in": "query", "required": false, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity profile",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/EntityProfile"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/entities": {
+      "post": {
+        "summary": "Persist or refresh entity",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/EntityProfile"}
+            }
+          }
+        },
+        "responses": {
+          "202": {"description": "Accepted"}
+        }
+      }
+    },
+    "/entities/{id}": {
+      "get": {
+        "summary": "Get entity by ID",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity profile",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/EntityProfile"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/export": {
+      "post": {
+        "summary": "Export data",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                  },
+                  "format": {
+                    "type": "string",
+                    "enum": ["PDF", "JSON"]
+                  }
+                },
+                "required": ["ids", "format"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Export created"}
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Doc": {"$ref": "../../packages/schemas/doc.schema.json"},
+      "Signal": {"$ref": "../../packages/schemas/signal.schema.json"},
+      "EntityProfile": {"$ref": "../../packages/schemas/entity_profile.schema.json"},
+      "AuditEvent": {"$ref": "../../packages/schemas/audit_event.schema.json"},
+      "PivotEdge": {"$ref": "../../packages/schemas/pivot_edge.schema.json"}
+    }
+  }
+}

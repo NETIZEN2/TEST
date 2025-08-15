@@ -15,6 +15,22 @@ from dataclasses import dataclass, field
 from fastapi import FastAPI, HTTPException
 
 from .audit_log import AuditLog
+from services.connectors import (
+    Connector,
+    GitHubUsersConnector,
+    GoogleNewsConnector,
+    MediaWikiConnector,
+    RDAPConnector,
+    AbnLookupConnector,
+    CompaniesHouseConnector,
+    CrtShConnector,
+    GdeltConnector,
+    OpenAlexConnector,
+    OpenCorporatesConnector,
+    SecEdgarConnector,
+    WaybackConnector,
+    WikidataConnector,
+)
 
 app = FastAPI()
 audit_log = AuditLog()
@@ -108,6 +124,34 @@ def normalise_doc(raw_doc: dict) -> dict:
     }
 
 
+CONNECTORS: List[Connector] = [
+    MediaWikiConnector(),
+    GoogleNewsConnector(),
+    RDAPConnector(),
+    GitHubUsersConnector(),
+]
+
+if os.getenv("PHASE1_CONNECTORS") == "true":
+    CONNECTORS.extend(
+        [
+            WikidataConnector(),
+            OpenAlexConnector(),
+            AbnLookupConnector(),
+            SecEdgarConnector(),
+            CompaniesHouseConnector(),
+            OpenCorporatesConnector(),
+            GdeltConnector(),
+            CrtShConnector(),
+            WaybackConnector(),
+        ]
+    )
+
+
+async def run_connectors(query: str, type: Optional[str] = None) -> List[dict]:
+    """Run all configured connectors concurrently for *query*."""
+
+    tasks = [c.search(query, type=type) for c in CONNECTORS]
+    results = await asyncio.gather(*tasks)
 async def connector_example(query: str) -> List[dict]:
     """Dummy connector returning deterministic data."""
 
@@ -145,6 +189,8 @@ def audit(action: str, target: str, metadata: dict) -> None:
     )
 
 
+async def pipeline_search(query: str, type: Optional[str] = None) -> List[dict]:
+    raw_docs = await run_connectors(query, type)
 async def pipeline_search(query: str) -> List[dict]:
     raw_docs = await run_connectors(query)
     seen = set()
@@ -178,6 +224,7 @@ async def health() -> dict:
 async def search(q: str, type: Optional[str] = None):
     start = time.time()
     audit("search_start", q, {})
+    docs = await pipeline_search(q, type)
     docs = await pipeline_search(q)
     audit("search_end", q, {"count": len(docs), "latency_ms": int((time.time() - start) * 1000)})
     return {"query": q, "type": type, "count": len(docs), "docs": docs}
@@ -187,6 +234,7 @@ async def search(q: str, type: Optional[str] = None):
 async def profile(q: str, type: str):
     start = time.time()
     audit("profile_start", q, {"type": type})
+    docs = await pipeline_search(q, type)
     docs = await pipeline_search(q)
     signals: Dict[str, List[str]] = {"emails": [], "domains": [], "usernames": [], "phones": [], "locations": []}
     title_counts: Dict[str, int] = {}

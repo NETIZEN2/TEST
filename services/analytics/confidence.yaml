@@ -1,0 +1,5 @@
+weights:
+  source_weight: 0.4
+  corroboration_count: 0.3
+  recency: 0.2
+  media_verification_score: 0.1

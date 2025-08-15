@@ -161,6 +161,10 @@ async def pipeline_search(query: str) -> List[dict]:
 # ---------------------------------------------------------------------------
 # API endpoints
 # ---------------------------------------------------------------------------
+"""FastAPI service entry point."""
+from fastapi import FastAPI
+
+app = FastAPI()
 
 
 @app.get("/health")
@@ -238,3 +242,4 @@ async def export(profile: EntityProfileModel, format: str = "json"):
         raise HTTPException(400, "unsupported format")
     # stub: just return the profile
     return profile
+    return {"status": "ok"}

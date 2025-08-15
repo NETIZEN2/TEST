@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "scripts": {
+  "build": "YOUR_BUILD_COMMAND_HERE"
+}
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "entity_profile.schema.json",
+  "title": "EntityProfile",
+  "type": "object",
+  "properties": {
+    "query": {"type": "string"},
+    "type": {
+      "type": "string",
+      "enum": ["person", "company", "group", "asset", "unknown"]
+    },
+    "canonical_name": {"type": "string"},
+    "aliases": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": []
+    },
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "description": {"type": "string"},
+    "signals": {"$ref": "signal.schema.json"},
+    "facts": {
+      "type": "object",
+      "properties": {
+        "tech": {"$ref": "tech_facts.schema.json"},
+        "geo": {"$ref": "geo_facts.schema.json"},
+        "legal": {"$ref": "legal_facts.schema.json"},
+        "media": {"$ref": "media_facts.schema.json"}
+      },
+      "default": {},
+      "additionalProperties": false
+    },
+    "sources": {
+      "type": "array",
+      "items": {"$ref": "doc.schema.json"}
+    }
+  },
+  "required": [
+    "query",
+    "type",
+    "aliases",
+    "confidence",
+    "signals",
+    "facts",
+    "sources"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "legal_facts.schema.json",
+  "title": "LegalFacts",
+  "type": "object",
+  "properties": {
+    "registrations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Corporate or civic registration numbers"
+    },
+    "filings": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Regulatory filings"
+    },
+    "patents": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Patent or trademark references"
+    },
+    "notices": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Court or insolvency notices"
+    }
+  },
+  "additionalProperties": false,
+  "default": {}
+}

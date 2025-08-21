@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "doc.schema.json",
+  "title": "Doc",
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"},
+    "title": {"type": "string"},
+    "summary": {"type": "string"},
+    "url": {"type": "string", "format": "uri"},
+    "source": {"type": "string"},
+    "fetched_at": {"type": "string", "format": "date-time"},
+    "raw": {"type": "object"},
+    "hash": {"type": "string"},
+    "classification": {
+      "type": "string",
+      "enum": ["OFFICIAL", "PROTECTED"],
+      "default": "OFFICIAL"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "url": {"type": "string", "format": "uri"},
+        "fetched_at": {"type": "string", "format": "date-time"},
+        "content_hash": {"type": "string"},
+        "connector": {"type": "string"}
+      },
+      "required": ["url", "fetched_at", "content_hash", "connector"],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "summary",
+    "url",
+    "source",
+    "fetched_at",
+    "raw",
+    "hash",
+    "classification",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

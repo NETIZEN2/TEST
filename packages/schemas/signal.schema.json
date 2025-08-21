@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "signal.schema.json",
+  "title": "Signal",
+  "type": "object",
+  "properties": {
+    "emails": {
+      "type": "array",
+      "items": {"type": "string", "format": "email"}
+    },
+    "domains": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "usernames": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "phones": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "locations": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pivot_edge.schema.json",
+  "title": "PivotEdge",
+  "type": "object",
+  "properties": {
+    "from_type": {"type": "string"},
+    "to_type": {"type": "string"},
+    "pattern": {"type": "string"},
+    "tos_notes": {"type": "string"},
+    "risk_score": {"type": "number"},
+    "enabled": {"type": "boolean"}
+  },
+  "required": ["from_type", "to_type", "pattern", "tos_notes", "risk_score", "enabled"],
+  "additionalProperties": false
+}

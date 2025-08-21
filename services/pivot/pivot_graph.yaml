@@ -1,0 +1,90 @@
+- from_type: domain
+  to_type: subdomain
+  pattern: ct_subdomains
+  tos_notes: certificate transparency search
+  risk_score: 0.2
+  enabled: true
+- from_type: subdomain
+  to_type: asn
+  pattern: dns_asn
+  tos_notes: rdap lookup
+  risk_score: 0.1
+  enabled: true
+- from_type: asn
+  to_type: domain
+  pattern: hosted_domains
+  tos_notes: reverse rdap
+  risk_score: 0.3
+  enabled: true
+- from_type: domain
+  to_type: provider
+  pattern: mx_spf_dkim
+  tos_notes: dns records for email provider
+  risk_score: 0.2
+  enabled: true
+- from_type: email
+  to_type: hash
+  pattern: gravatar_hash
+  tos_notes: md5 hash for gravatar
+  risk_score: 0.2
+  enabled: true
+- from_type: hash
+  to_type: email
+  pattern: mailing_list
+  tos_notes: public mailing list archives
+  risk_score: 0.4
+  enabled: true
+- from_type: email
+  to_type: person
+  pattern: profile_lookup
+  tos_notes: public profile lookup
+  risk_score: 0.3
+  enabled: true
+- from_type: username
+  to_type: person
+  pattern: platform_search
+  tos_notes: official platform search
+  risk_score: 0.2
+  enabled: true
+- from_type: company
+  to_type: registry
+  pattern: registry_search
+  tos_notes: company registries and patents
+  risk_score: 0.2
+  enabled: true
+- from_type: registry
+  to_type: address
+  pattern: address_extract
+  tos_notes: addresses from filings
+  risk_score: 0.2
+  enabled: true
+- from_type: address
+  to_type: permit
+  pattern: permit_lookup
+  tos_notes: permit search
+  risk_score: 0.2
+  enabled: true
+- from_type: address
+  to_type: company
+  pattern: property_permit_records
+  tos_notes: property or permit records
+  risk_score: 0.3
+  enabled: true
+- from_type: company
+  to_type: director
+  pattern: directors
+  tos_notes: registered directors
+  risk_score: 0.3
+  enabled: true
+- from_type: vehicle_id
+  to_type: owner
+  pattern: ownership_lookup
+  tos_notes: ownership lookup via api
+  risk_score: 0.2
+  enabled: true
+- from_type: owner
+  to_type: port
+  pattern: port_lookup
+  tos_notes: port or airport records
+  risk_score: 0.2
+  enabled: true
